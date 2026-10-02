@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나는 어떤 투자 실패 유형일까? - 투자 심리 테스트</title>
+<meta name="description" content="10개 질문으로 알아보는 나의 투자 심리 편향 유형. 손절 못 하는 홀딩형부터 고점 추격 매수형까지.">
+<style>
+  :root {
+    --bg: #0f1115;
+    --card: #1a1d24;
+    --card-border: #2a2e38;
+    --text: #e8e9ec;
+    --text-dim: #9a9fab;
+    --accent: #ffb13c;
+    --accent-dim: #4a3a1f;
+    --progress-track: #2a2e38;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    padding: 24px 16px 60px;
+  }
+  .wrap { width: 100%; max-width: 560px; }
+  header { text-align: center; margin-bottom: 28px; }
+  header h1 { font-size: 1.5rem; margin: 0 0 8px; line-height: 1.4; }
+  header p { color: var(--text-dim); font-size: 0.92rem; margin: 0; }
+
+  .progress-bar {
+    height: 6px;
+    background: var(--progress-track);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 28px 22px;
+  }
+
+  .q-count { color: var(--accent); font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; }
+  .q-text { font-size: 1.15rem; line-height: 1.55; margin: 0 0 26px; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt-btn {
+    appearance: none;
+    border: 1px solid var(--card-border);
+    background: #22262f;
+    color: var(--text);
+    padding: 14px 16px;
+    border-radius: 12px;
+    font-size: 0.98rem;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .opt-btn:hover { border-color: var(--accent); background: #272b35; }
+  .opt-btn:active { transform: scale(0.99); }
+
+  .nav-row { display: flex; justify-content: space-between; margin-top: 22px; }
+  .text-btn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 0.88rem;
+    cursor: pointer;
+    padding: 6px 4px;
+  }
+  .text-btn:hover { color: var(--text); }
+  .text-btn:disabled { opacity: 0.35; cursor: default; }
+
+  .hidden { display: none !important; }
+
+  /* Start screen */
+  .start-card { text-align: center; }
+  .start-card .emoji { font-size: 2.6rem; margin-bottom: 10px; }
+  .start-card ul {
+    text-align: left;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    line-height: 1.8;
+    margin: 18px 0 26px;
+    padding-left: 20px;
+  }
+  .cta-btn {
+    appearance: none;
+    border: none;
+    background: var(--accent);
+    color: #1a1304;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 14px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    width: 100%;
+  }
+  .cta-btn:hover { filter: brightness(1.05); }
+
+  /* Result screen */
+  .result-badge {
+    display: inline-block;
+    background: var(--accent-dim);
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+  }
+  .result-title { font-size: 1.5rem; margin: 0 0 14px; line-height: 1.4; }
+  .result-desc { color: var(--text-dim); font-size: 0.96rem; line-height: 1.7; margin-bottom: 18px; }
+  .result-sub {
+    background: #15171c;
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+  }
+  .result-sub .label { color: var(--accent); font-size: 0.8rem; font-weight: 700; margin-bottom: 6px; }
+  .result-sub p { margin: 0; font-size: 0.9rem; color: var(--text-dim); line-height: 1.6; }
+
+  .score-bars { margin: 20px 0; }
+  .score-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.82rem; }
+  .score-row .name { width: 110px; flex-shrink: 0; color: var(--text-dim); }
+  .score-row .bar-track { flex: 1; background: var(--progress-track); border-radius: 999px; height: 8px; overflow: hidden; }
+  .score-row .bar-fill { height: 100%; background: var(--accent); border-radius: 999px; }
+
+  .share-row { display: flex; gap: 10px; margin-top: 22px; }
+  .share-row button, .share-row a {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    border: 1px solid var(--card-border);
+    background: #22262f;
+    color: var(--text);
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+  }
+  .share-row button:hover, .share-row a:hover { border-color: var(--accent); }
+
+  .restart-link { text-align: center; margin-top: 18px; }
+  .restart-link a { color: var(--text-dim); font-size: 0.85rem; cursor: pointer; }
+
+  footer { text-align: center; margin-top: 30px; color: var(--text-dim); font-size: 0.78rem; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>나는 어떤 투자 실패 유형일까?</h1>
+    <p>10개 질문으로 알아보는 나의 투자 심리 편향</p>
+  </header>
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+  <!-- Start screen -->
+  <div class="card start-card" id="startScreen">
+    <div class="emoji">📉</div>
+    <p style="color:var(--text-dim); font-size:0.95rem; line-height:1.7; margin:0;">
+      "왜 항상 나만 고점에 사는 걸까?" <br>
+      투자 실패는 실력보다 <b style="color:var(--text)">심리적 습관</b> 때문인 경우가 많습니다.
+    </p>
+    <ul>
+      <li>총 10문항, 소요시간 약 2분</li>
+      <li>정답은 없으니 평소 투자 습관 그대로 답해주세요</li>
+      <li>결과는 저장되지 않고 이 화면에서만 계산됩니다</li>
+    </ul>
+    <button class="cta-btn" id="startBtn">테스트 시작하기</button>
+  </div>
+
+  <!-- Question screen -->
+  <div class="card hidden" id="quizScreen">
+    <div class="q-count" id="qCount">1 / 10</div>
+    <p class="q-text" id="qText"></p>
+    <div class="options" id="optionsWrap"></div>
+    <div class="nav-row">
+      <button class="text-btn" id="prevBtn">← 이전</button>
+      <button class="text-btn" id="restartBtn2">처음부터</button>
+    </div>
+  </div>
+
+  <!-- Result screen -->
+  <div class="card hidden" id="resultScreen">
+    <div class="result-badge" id="resultBadge">당신의 투자 심리 유형</div>
+    <h2 class="result-title" id="resultTitle"></h2>
+    <p class="result-desc" id="resultDesc"></p>
+
+    <div class="result-sub">
+      <div class="label" id="subLabel"></div>
+      <p id="subDesc"></p>
+    </div>
+
+    <div class="score-bars" id="scoreBars"></div>
+
+    <div class="share-row">
+      <button id="copyBtn">결과 복사하기</button>
+      <a id="redoLink" href="#">다시 하기</a>
+    </div>
+  </div>
+
+  <footer>
+    이 테스트는 자기 이해를 돕기 위한 참고용이며, 투자 조언이 아닙니다.
+  </footer>
+</div>
+
+<script>
+(function () {
+  // 각 편향(type)과 질문 매핑. weight가 2인 유형은 질문 2개(가중치 높음, 체감도가 가장 큰 편향).
+  const TYPES = {
+    lossAversion: {
+      name: "손절 못 하는 홀딩형",
+      desc: "손실을 '확정'하는 것 자체가 너무 괴로워서, 이미 떨어진 종목을 '본전만 오면 팔아야지' 하며 계속 들고 가는 편입니다. 문제는 '본전'이 기준이 되는 순간 추가 하락까지 버티게 된다는 점입니다.",
+    },
+    fomo: {
+      name: "고점 추격 매수형",
+      desc: "급등하는 종목이나 주변의 투자 열기를 보면 '나만 소외되는 것 같은' 불안감에 뒤늦게 올라타는 편입니다. 이미 오를 대로 오른 뒤에 진입하게 되는 패턴이 반복되기 쉽습니다.",
+    },
+    confirmation: {
+      name: "내 종목만 믿는 확신형",
+      desc: "일단 매수하고 나면, 그 종목에 대한 긍정적인 뉴스와 의견 위주로 받아들이게 됩니다. 반대 신호를 '노이즈'로 치부하다가 대응 타이밍을 놓치기 쉽습니다.",
+    },
+    disposition: {
+      name: "익절은 빠르고 손절은 느린 반쪽형",
+      desc: "수익이 조금만 나도 불안해서 서둘러 파는 반면, 손실 종목은 오래 버팁니다. 결과적으로 '작은 수익 + 큰 손실'이 쌓이기 쉬운 전형적인 처분효과 패턴입니다.",
+    },
+    herd: {
+      name: "다수결 추종형",
+      desc: "많은 사람이 선택했다는 사실 자체가 안심이 되어 투자 판단의 근거가 되곤 합니다. 다수의 선택이 항상 옳은 것은 아니라는 점이 종종 뒤늦게 드러납니다.",
+    },
+    overconfidence: {
+      name: "내가 전문가인 줄 아는 과신형",
+      desc: "본인의 분석이나 감이 시장 평균보다 낫다고 느끼는 경우가 많습니다. 몇 번의 성공 경험이 과신으로 이어져, 리스크 관리에 소홀해지기 쉽습니다.",
+    },
+    anchoring: {
+      name: "본전 집착형",
+      desc: "처음 산 가격이 머릿속에 '기준점'으로 계속 남아서, 현재 가치보다 매수 단가 대비 손익에 더 신경 쓰게 됩니다. 시장은 당신의 매수가를 기억하지 않는다는 게 함정입니다.",
+    },
+    hindsight: {
+      name: "그럴 줄 알았다형",
+      desc: "하락장이나 폭락이 지나간 뒤에 '그럴 줄 알았다'고 느끼는 경우가 많습니다. 이 착각은 다음 번에도 미리 알아챌 수 있다는 과신으로 이어지기 쉽습니다.",
+    },
+  };
+
+  const QUESTIONS = [
+    { type: "lossAversion", text: "손실 중인 종목은 '팔면 진짜 손해가 확정된다'는 생각에 끝까지 들고 가는 편이다." },
+    { type: "lossAversion", text: "많이 떨어진 종목일수록 오히려 손절이 더 어렵게 느껴진다." },
+    { type: "fomo", text: "주변에서 특정 종목 얘기를 자주 들으면 나도 모르게 사고 싶어진다." },
+    { type: "fomo", text: "이미 많이 오른 종목을 보면 '지금이라도 올라타야 할 것 같은' 조급함이 든다." },
+    { type: "confirmation", text: "내가 산 종목에 대한 긍정적인 뉴스나 의견이 더 눈에 잘 들어온다." },
+    { type: "disposition", text: "수익이 난 종목은 더 오를 수 있어도 '일단 익절'하고 싶어진다." },
+    { type: "herd", text: "많은 사람이 선택하는 투자처라면 왠지 믿음이 간다." },
+    { type: "overconfidence", text: "내 투자 판단이 전문가나 시장 평균보다 더 정확하다고 느낄 때가 많다." },
+    { type: "anchoring", text: "내가 처음 산 가격이 계속 머릿속 기준점처럼 남아있다." },
+    { type: "hindsight", text: "하락장이 지나고 나면 '그럴 줄 알았다'는 생각이 자주 든다." },
+  ];
+
+  const SCALE = [
+    { label: "전혀 그렇지 않다", value: 1 },
+    { label: "별로 그렇지 않다", value: 2 },
+    { label: "보통이다", value: 3 },
+    { label: "약간 그렇다", value: 4 },
+    { label: "매우 그렇다", value: 5 },
+  ];
+
+  const MAX_PER_TYPE = {};
+  QUESTIONS.forEach((q) => { MAX_PER_TYPE[q.type] = (MAX_PER_TYPE[q.type] || 0) + 5; });
+
+  let current = 0;
+  const answers = new Array(QUESTIONS.length).fill(null);
+
+  const startScreen = document.getElementById("startScreen");
+  const quizScreen = document.getElementById("quizScreen");
+  const resultScreen = document.getElementById("resultScreen");
+  const progressFill = document.getElementById("progressFill");
+
+  document.getElementById("startBtn").addEventListener("click", () => {
+    startScreen.classList.add("hidden");
+    quizScreen.classList.remove("hidden");
+    renderQuestion();
+  });
+
+  document.getElementById("prevBtn").addEventListener("click", () => {
+    if (current > 0) { current--; renderQuestion(); }
+  });
+
+  function resetAll() {
+    current = 0;
+    answers.fill(null);
+    resultScreen.classList.add("hidden");
+    quizScreen.classList.add("hidden");
+    startScreen.classList.remove("hidden");
+    progressFill.style.width = "0%";
+  }
+  document.getElementById("restartBtn2").addEventListener("click", resetAll);
+  document.getElementById("redoLink").addEventListener("click", (e) => { e.preventDefault(); resetAll(); });
+
+  function renderQuestion() {
+    const q = QUESTIONS[current];
+    document.getElementById("qCount").textContent = (current + 1) + " / " + QUESTIONS.length;
+    document.getElementById("qText").textContent = q.text;
+    document.getElementById("prevBtn").disabled = current === 0;
+    progressFill.style.width = Math.round((current / QUESTIONS.length) * 100) + "%";
+
+    const wrap = document.getElementById("optionsWrap");
+    wrap.innerHTML = "";
+    SCALE.forEach((opt) => {
+      const btn = document.createElement("button");
+      btn.className = "opt-btn";
+      btn.textContent = opt.label;
+      if (answers[current] === opt.value) {
+        btn.style.borderColor = "var(--accent)";
+        btn.style.background = "#2a2416";
+      }
+      btn.addEventListener("click", () => {
+        answers[current] = opt.value;
+        if (current < QUESTIONS.length - 1) {
+          current++;
+          renderQuestion();
+        } else {
+          showResult();
+        }
+      });
+      wrap.appendChild(btn);
+    });
+  }
+
+  function showResult() {
+    quizScreen.classList.add("hidden");
+    progressFill.style.width = "100%";
+
+    const scores = {};
+    Object.keys(TYPES).forEach((t) => (scores[t] = 0));
+    QUESTIONS.forEach((q, i) => { scores[q.type] += answers[i] || 0; });
+
+    const ranked = Object.keys(scores)
+      .map((t) => ({ type: t, pct: scores[t] / MAX_PER_TYPE[t] }))
+      .sort((a, b) => b.pct - a.pct);
+
+    const primary = TYPES[ranked[0].type];
+    const secondary = TYPES[ranked[1].type];
+
+    document.getElementById("resultTitle").textContent = primary.name;
+    document.getElementById("resultDesc").textContent = primary.desc;
+    document.getElementById("subLabel").textContent = "2순위 성향: " + secondary.name;
+    document.getElementById("subDesc").textContent = secondary.desc;
+
+    const barsWrap = document.getElementById("scoreBars");
+    barsWrap.innerHTML = "";
+    ranked.forEach((r) => {
+      const row = document.createElement("div");
+      row.className = "score-row";
+      const pct = Math.round(r.pct * 100);
+      row.innerHTML =
+        '<div class="name">' + TYPES[r.type].name.replace(/형$/, "") + '</div>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
+        '<div style="width:34px; text-align:right; color:var(--text-dim);">' + pct + "%</div>";
+      barsWrap.appendChild(row);
+    });
+
+    document.getElementById("copyBtn").onclick = () => {
+      const text = "투자 심리 테스트 결과: 나는 '" + primary.name + "' (2순위: " + secondary.name + ")";
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById("copyBtn");
+        const original = btn.textContent;
+        btn.textContent = "복사 완료!";
+        setTimeout(() => (btn.textContent = original), 1500);
+      }).catch(() => {});
+    };
+
+    resultScreen.classList.remove("hidden");
+  }
+})();
+</script>
+</body>
+</html>
